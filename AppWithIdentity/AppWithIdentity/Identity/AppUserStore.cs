@@ -26,7 +26,7 @@ namespace AppWithIdentity.Identity
                 await connection.ExecuteAsync("insert into appuser (id, username, normalizedUserName, passwordhash) values (@id, @username, @normalizedUserName, @passwordhash)",
                     new {
                         id = user.Id,
-                        username = user.Name,
+                        username = user.UserName,
                         normalizedUserName = user.NormalizedName,
                         passwordhash = user.PasswordHash
                     }
@@ -40,7 +40,7 @@ namespace AppWithIdentity.Identity
         {
             using (var connection = GetDbConnection())
             {
-                await connection.ExecuteAsync("delete appuser where username = @username", new { username = user.Name });
+                await connection.ExecuteAsync("delete appuser where username = @username", new { username = user.UserName });
             }
 
             return IdentityResult.Success;
@@ -54,7 +54,7 @@ namespace AppWithIdentity.Identity
         {
             using (var connection = GetDbConnection())
             {
-                return await connection.QueryFirstOrDefaultAsync<AppUser>("select * form appuser where id = @id", new { id = userId});
+                return await connection.QueryFirstOrDefaultAsync<AppUser>("select * from appuser where id = @id", new { id = userId});
             }
         }
 
@@ -62,7 +62,7 @@ namespace AppWithIdentity.Identity
         {
             using (var connection = GetDbConnection())
             {
-                return await connection.QueryFirstOrDefaultAsync<AppUser>("select * form appuser where username = @username", new { username = normalizedUserName });
+                return await connection.QueryFirstOrDefaultAsync<AppUser>("select * from appuser where username = @username", new { username = normalizedUserName });
             }
         }
 
@@ -83,7 +83,7 @@ namespace AppWithIdentity.Identity
 
         public Task<string> GetUserNameAsync(AppUser user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Name);
+            return Task.FromResult(user.UserName);
         }
 
         public Task<bool> HasPasswordAsync(AppUser user, CancellationToken cancellationToken)
@@ -105,7 +105,7 @@ namespace AppWithIdentity.Identity
 
         public Task SetUserNameAsync(AppUser user, string userName, CancellationToken cancellationToken)
         {
-            user.Name = userName;
+            user.UserName = userName;
             return Task.CompletedTask;
         }
 
@@ -117,7 +117,7 @@ namespace AppWithIdentity.Identity
                     new
                     {
                         id = user.Id,
-                        username = user.Name,
+                        username = user.UserName,
                         normalizedUserName = user.NormalizedName,
                         passwordhash = user.PasswordHash
                     }

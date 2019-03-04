@@ -26,6 +26,10 @@ namespace AppWithIdentity
             services.AddMvc();
             services.AddIdentityCore<AppUser>(option => { });
             services.AddScoped<IUserStore<AppUser>, AppUserStore>();
+
+            services.AddAuthentication("cookies").AddCookie("cookies", x => {
+                x.LoginPath = "/Home/Login";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,7 +43,7 @@ namespace AppWithIdentity
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseAuthentication();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
